@@ -1,0 +1,78 @@
+{
+  "name": "@brahma-dev/abuseipdb-middleware",
+  "version": "1.0.0",
+  "description": "Universal middleware for reporting malicious IPs to AbuseIPDB. Supports Elysia, Express, Koa, Fastify, and Hono.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "prepublishOnly": "bun run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brahma-dev/abuseipdb-middleware"
+  },
+  "keywords": [
+    "abuseipdb",
+    "security",
+    "middleware",
+    "elysia",
+    "express",
+    "koa",
+    "fastify",
+    "hono",
+    "bun",
+    "nodejs"
+  ],
+  "author": "Brahma Dev",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/koa": "^2.13.10",
+    "@types/node": "^20.8.9",
+    "@types/supertest": "^6.0.3",
+    "elysia": "^0.8.17",
+    "elysia-ip": "^1.0.10",
+    "express": "^4.18.2",
+    "fastify": "^4.24.3",
+    "fastify-plugin": "^4.5.1",
+    "hono": "^3.10.0",
+    "koa": "^2.14.2",
+    "supertest": "^7.1.4",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2",
+    "vitest": "^4.0.7"
+  },
+  "peerDependencies": {
+    "elysia": ">=0.8",
+    "express": ">=4",
+    "fastify": ">=4",
+    "hono": ">=3",
+    "koa": ">=2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependenciesMeta": {
+    "elysia": {
+      "optional": true
+    },
+    "express": {
+      "optional": true
+    },
+    "fastify": {
+      "optional": true
+    },
+    "hono": {
+      "optional": true
+    },
+    "koa": {
+      "optional": true
+    }
+  }
+}
