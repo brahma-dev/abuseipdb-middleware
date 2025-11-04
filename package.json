@@ -1,6 +1,6 @@
 {
   "name": "@brahma-dev/abuseipdb-middleware",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Universal middleware for reporting malicious IPs to AbuseIPDB. Supports Elysia, Express, Koa, Fastify, and Hono.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
