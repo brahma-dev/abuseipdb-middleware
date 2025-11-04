@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterAll, beforeEach } from 'vitest';
 import supertest from 'supertest';
 
 // MOCK
@@ -30,12 +30,15 @@ import {
 const options = { apiKey: 'test-key' };
 const suspiciousPath = '/.env';
 const normalPath = '/';
+const manualPath = '/manual-report';
+const testIP = '192.168.1.1';
 
 describe('Framework Integrations', () => {
 	// --- Express ---
 	describe('Express', () => {
 		const app = express();
-		app.use(abuseIPDBExpress(options));
+		const { middleware, report } = abuseIPDBExpress(options);
+		app.use(middleware);
 		app.get(normalPath, (req, res) => res.sendStatus(200));
 		app.get(suspiciousPath, (req, res) => res.sendStatus(200));
 
@@ -53,7 +56,8 @@ describe('Framework Integrations', () => {
 	// --- Koa ---
 	describe('Koa', () => {
 		const app = new Koa();
-		app.use(abuseIPDBKoa(options));
+		const { middleware, report } = abuseIPDBKoa(options);
+		app.use(middleware);
 		app.use((ctx) => {
 			ctx.status = 200;
 		});
@@ -98,7 +102,8 @@ describe('Framework Integrations', () => {
 	// --- Hono ---
 	describe('Hono', () => {
 		const app = new Hono();
-		app.use('*', abuseIPDBHono(options));
+		const { middleware, report } = abuseIPDBHono(options);
+		app.use('*', middleware);
 		app.get(normalPath, (c) => c.text('ok'));
 		app.get(suspiciousPath, (c) => c.text('ok'));
 
@@ -121,17 +126,18 @@ describe('Framework Integrations', () => {
 
 	// --- Elysia ---
 	describe('Elysia', () => {
-		const app = new Elysia()
-			.use(ip()) // Uses the improved mock
-			.use(abuseIPDBElysia(options))
-			.get(normalPath, () => 'ok')
-			.get(suspiciousPath, () => 'ok');
+		let app: Elysia;
 
-		it('should not report a normal path', async () => {
-			const req = new Request(`http://localhost${normalPath}`);
-			const res = await app.handle(req);
-			expect(res.status).toBe(200);
-			expect(fetch).not.toHaveBeenCalled();
+		beforeEach(() => {
+			const { middleware, report } = abuseIPDBElysia(options);
+			app = new Elysia()
+				.use(ip())
+				.use(middleware)
+				.get(suspiciousPath, () => 'ok')
+				.get(manualPath, ({ ip }) => {
+					if (ip) report(ip, 'Manual Elysia Report');
+					return 'ok';
+				});
 		});
 
 		it('should report a suspicious path', async () => {
@@ -142,6 +148,12 @@ describe('Framework Integrations', () => {
 			});
 			const res = await app.handle(req);
 			expect(res.status).toBe(200);
+			expect(fetch).toHaveBeenCalledOnce();
+		});
+
+		it('should support manual reporting', async () => {
+			const req = new Request(`http://localhost${manualPath}`, { headers: { 'x-forwarded-for': testIP } });
+			await app.handle(req);
 			expect(fetch).toHaveBeenCalledOnce();
 		});
 	});

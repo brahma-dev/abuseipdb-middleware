@@ -11,7 +11,7 @@ export const createAbuseIPDBPlugin = (options: AbuseIPDBOptions) => {
 		apiKey,
 		paths,
 		additionalPaths = [],
-		categories = "21",
+		categories = "21", // Default category: Web App Attack
 		cacheTTL = 1000 * 60 * 60,
 	} = options;
 
@@ -25,7 +25,7 @@ export const createAbuseIPDBPlugin = (options: AbuseIPDBOptions) => {
 	const suspiciousPaths = paths ?? [...defaultPaths, ...additionalPaths];
 	const reportedIPs = new Map<string, number>();
 
-	async function reportToAbuseIPDB(ip: string, path: string) {
+	async function reportToAbuseIPDB(ip: string, comment: string, reportCategories?: string) {
 		const now = Date.now();
 		const lastReported = reportedIPs.get(ip);
 		if (lastReported && now - lastReported < cacheTTL) {
@@ -44,12 +44,12 @@ export const createAbuseIPDBPlugin = (options: AbuseIPDBOptions) => {
 				},
 				body: new URLSearchParams({
 					ip,
-					categories,
-					comment: `Attempted access to suspicious path: ${path}`,
+					categories: reportCategories ?? categories,
+					comment,
 					timestamp: new Date().toISOString()
 				})
 			});
-			console.log(`Reported IP ${ip} to AbuseIPDB for path: ${path}`);
+			console.log(`Reported IP ${ip} to AbuseIPDB: "${comment}"`);
 		} catch (err) {
 			console.error("Failed to report to AbuseIPDB:", err);
 		}
