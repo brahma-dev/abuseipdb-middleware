@@ -45,21 +45,13 @@ jobs:
         run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # --- Step 2: Modify package.json and Publish to GitHub Packages (scoped) ---
-      - name: Modify package.json for GitHub Packages
-        run: |
-          bun -e '
-            const pkg = await Bun.file("package.json").json();
-            pkg.name = `@brahma-dev/${pkg.name}`;
-            await Bun.write("package.json", JSON.stringify(pkg, null, 2));
-          '
         
       - name: Setup Node.js for GitHub Packages
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://npm.pkg.github.com'
+          scope: '@brahma-dev'
 
       - name: Publish to GitHub Packages
         run: npm publish
