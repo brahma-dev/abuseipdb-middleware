@@ -5,7 +5,7 @@ A universal middleware for reporting malicious IP addresses to [AbuseIPDB](https
 ## Installation
 
 ```bash
-npm install abuseipdb-middleware
+npm install @brahma-dev/abuseipdb-middleware
 ```
 
 ## Features
@@ -26,7 +26,7 @@ The middleware initializer returns an object containing the `middleware` itself 
 
 ```typescript
 import express from 'express';
-import { abuseIPDBExpress } from 'abuseipdb-middleware';
+import { abuseIPDBExpress } from ' @brahma-dev/abuseipdb-middleware';
 
 const app = express();
 const { middleware, report } = abuseIPDBExpress({ apiKey: 'YOUR_API_KEY' });
@@ -39,7 +39,7 @@ app.use(middleware);
 
 ```typescript
 import Koa from 'koa';
-import { abuseIPDBKoa } from 'abuseipdb-middleware';
+import { abuseIPDBKoa } from '@brahma-dev/abuseipdb-middleware';
 
 const app = new Koa();
 const { middleware, report } = abuseIPDBKoa({ apiKey: 'YOUR_API_KEY' });
@@ -54,7 +54,7 @@ Fastify is slightly different. The `report` function is attached to the `fastify
 
 ```typescript
 import fastify from 'fastify';
-import { abuseIPDBFastify } from 'abuseipdb-middleware';
+import { abuseIPDBFastify } from '@brahma-dev/abuseipdb-middleware';
 
 const app = fastify();
 app.register(abuseIPDBFastify, { apiKey: 'YOUR_API_KEY' });
@@ -65,7 +65,7 @@ app.register(abuseIPDBFastify, { apiKey: 'YOUR_API_KEY' });
 
 ```typescript
 import { Hono } from 'hono';
-import { abuseIPDBHono } from 'abuseipdb-middleware';
+import { abuseIPDBHono } from '@brahma-dev/abuseipdb-middleware';
 
 const app = new Hono();
 const { middleware, report } = abuseIPDBHono({ apiKey: 'YOUR_API_KEY' });
@@ -84,7 +84,7 @@ bun add elysia-ip
 ```ts
 import { Elysia } from 'elysia';
 import { ip } from 'elysia-ip';
-import { abuseIPDBElysia } from 'abuseipdb-middleware';
+import { abuseIPDBElysia } from '@brahma-dev/abuseipdb-middleware';
 
 const { middleware, report } = abuseIPDBElysia({ apiKey: 'YOUR_API_KEY' });
 
